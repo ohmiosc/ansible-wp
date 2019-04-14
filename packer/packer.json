@@ -1,0 +1,32 @@
+{
+    "variables" : {
+        "region": "ap-northeast-1",
+        "subnet_id": "subnet-a44b568c",
+        "aws_vpc": "vpc-e4054783",
+        "source_ami": "ami-00a5245b4816c38e6",
+        "instance_type": "t2.micro",
+        "ssh_username": "ec2-user",
+        "ami_name": "Hector-prueba1",
+        
+        "project": "",
+        "service": "",
+        "version": "",
+        "env": ""
+    
+      },
+      "builders": [{
+        "type": "amazon-ebs",
+        "region": "ap-northeast-1",
+        "subnet_id": "{{user `subnet_id`}}",
+        "source_ami": "ami-00a5245b4816c38e6",
+        "instance_type": "t2.small",
+        "ssh_username": "{{user `ssh_username`}}",
+        "vpc_id": "{{user `aws_vpc`}}",
+        "ami_name": "{{user `ami_name`}}"
+      }],
+    
+      "provisioners": [{
+        "type": "ansible",
+        "playbook_file": "../ansible/playbook.yml"
+      }]
+    }
