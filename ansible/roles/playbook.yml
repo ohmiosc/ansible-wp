@@ -1,1 +1,34 @@
 ---
+- name: Install WordPress, MySQL, Nginx, and PHP-FPM
+  hosts: all
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+---
+taks:
+# tasks file for wp-dependencies
+- name: Update packages (this is equivalent to yum update -y)
+  yum: name=* state=latest
+
+- name: Install dependencies for WordPress
+  yum: name={{ item }} state=present
+  with_items:
+        - nginx 
+        - mysql-server 
+        - mysql
+        - php 
+        - php-mysql
+        - MySQL-python
+
+- name: Ensure MariaDB is running (and enable it at boot)
+  service: name=mariadb state=started enabled=yes
+
+- name: Create MariaDB database
+  mysql_db: name={{ wp_mysql_db }} state=present
+
+  #roles:
+    #- server
+    #- mysql
+    #- nginx
+    #- php-fpm
+    #- wordpress
