@@ -27,7 +27,12 @@
     mysql_db: 
       name: wp_mysql_db 
       state: present
-
+  - name: crear usuario para wordpress
+    mysql_user:
+      name: wp_user
+      password: 12345
+      priv: '*.*:ALL'
+      state: present
   #roles:
     #- server
     #- mysql
