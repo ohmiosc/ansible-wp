@@ -22,7 +22,8 @@
         "instance_type": "t2.small",
         "ssh_username": "{{user `ssh_username`}}",
         "vpc_id": "{{user `aws_vpc`}}",
-        "ami_name": "{{user `ami_name`}}"
+        "ami_name": "{{user `ami_name`}}",
+        "force_deregister": true 
       }],
     
       "provisioners": [{
