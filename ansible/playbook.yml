@@ -10,16 +10,19 @@
       state:  latest
   - name: Install dependencies for WordPress
     yum: 
-      name: "{{ item }}"
-      state: present
-    with_items:
-        - nginx 
-        - mysql-server 
-        - mysql
-        - php 
-        - php-mysql
-        - MySQL-python
- 
+      name: "{{ packages }}"
+      #state: present
+    vars:
+      packages:
+      - nginx 
+      - mysql-server 
+      - mysql
+      - php71
+      - mysql55-server
+      - php71-mysqlnd
+      - php71-mbstring
+      - MySQL-python27
+      - python
   - name: Ensure MariaDB is running (and enable it at boot)
     service: name=mysqld state=started enabled=yes
 
