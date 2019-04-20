@@ -44,21 +44,25 @@
       dest=/tmp/wordpress.tar.gz
       validate_certs=no
   - name: Extract WordPress
-    unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/ copy=no
+    unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/html/ copy=no
     become: yes
 
-  #- name: Update default nginx site
-  #  become: yes
-  #  lineinfile: 
-  #    dest=/etc/apache2nginx/sites-enabled/000-default.conf 
-  #    regexp="(.)+DocumentRoot /var/www/html"
-  #    line="DocumentRoot /var/www/wordpress"
-  #  notify:
-  #   - restart nginx
+  - name: Update default nginx site
+    become: yes
+    lineinfile: 
+      path: /etc/nginx/nginx.conf.default 
+      regexp: "(.)+root /usr/share/nginx/html"
+      line: "root /var/www/html/wordpress"
+    notify:
+      - restart nginx
 
   - name: Copy sample config file
-    command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
+    command: mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php creates=/var/www/html/wordpress/wp-config.php
     become: yes
+  - name: chkconfig nginx
+    service:
+      name: nginx
+      enabled: yes
   #roles:
     #- server
     #- mysql
