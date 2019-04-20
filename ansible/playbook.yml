@@ -17,7 +17,7 @@
       - nginx 
       - mysql-server 
       - mysql
-      - php71
+      - php
       - mysql55-server
       - php71-mysqlnd
       - php71-mbstring
@@ -53,7 +53,9 @@
       path: /etc/nginx/nginx.conf.default 
       regexp: "(.)+root /usr/share/nginx/html"
       line: "root /var/www/html/wordpress"
-      
+  - name: Copy sample config file
+    command: mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php creates=/var/www/html/wordpress/wp-config.php
+    become: yes
   - name: Update WordPress config file
     lineinfile:
       path: /var/www/html/wordpress/wp-config.php
@@ -63,10 +65,6 @@
       - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', wp_mysql_db);"}        
       - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', wp_user);"}        
       - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', 12345);"}
-    become: yes
-
-  - name: Copy sample config file
-    command: mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php creates=/var/www/html/wordpress/wp-config.php
     become: yes
   - name: chkconfig nginx
     service:
