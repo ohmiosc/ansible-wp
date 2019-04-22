@@ -8,6 +8,7 @@
     yum:
       name: '*'
       state:  latest
+      
   - name: Install dependencies for WordPress
     yum: 
       name: "{{ packages }}"
@@ -35,6 +36,7 @@
       - mysql55-server
       - MySQL-python27
       - python
+
   - name: Ensure MariaDB is running (and enable it at boot)
     service: name=mysqld state=started enabled=yes
 
@@ -42,6 +44,7 @@
     mysql_db: 
       name: wp_mysql_db 
       state: present
+
   - name: crear usuario para wordpress
     mysql_user:
       name: wp_user
@@ -54,6 +57,7 @@
       url=https://wordpress.org/latest.tar.gz
       dest=/tmp/wordpress.tar.gz
       validate_certs=no
+
   - name: Creates directory html
     file:
       path: /var/www/html
@@ -61,6 +65,7 @@
       owner: root
       group: root
       mode: 0775
+
   - name: Extract WordPress
     unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/html/ copy=no
     become: yes
@@ -71,9 +76,11 @@
       path: /etc/nginx/nginx.conf.default 
       regexp: "(.)+root /usr/share/nginx/html"
       line: "root /var/www/html/wordpress"
+
   - name: Copy sample config file
     command: mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php creates=/var/www/html/wordpress/wp-config.php
     become: yes
+
   - name: Update WordPress config file
     lineinfile:
       path: /var/www/html/wordpress/wp-config.php
@@ -84,6 +91,7 @@
       - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', wp_user);"}        
       - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', 12345);"}
     become: yes
+
   - name: chkconfig nginx
     service:
       name: nginx
